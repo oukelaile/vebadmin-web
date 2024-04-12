@@ -1,0 +1,19 @@
+Index: src/router/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/router/index.js b/src/router/index.js
+--- a/src/router/index.js	
++++ b/src/router/index.js	(date 1712921159160)
+@@ -24,10 +24,8 @@
+                 name: '商品管理',
+                 component: () => import(/* webpackChunkName: "goods" */ '../views/system/MenuMange.vue'),
+             },
+-
+         ]
+     },
+-
+     {
+         path: '/login',
+         name: 'login',
