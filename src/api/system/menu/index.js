@@ -1,7 +1,7 @@
-import service from "@/request/index";
+import service from "@/api/index.js";
 
 // 获取菜单列表
-export function getMenuList(data){
+export function getMenuList(data) {
     return service({
         url: "menu/getMenuList",
         method: "post",
@@ -11,7 +11,7 @@ export function getMenuList(data){
 
 
 //添加
-export function addMenu(data){
+export function addMenu(data) {
     return service({
         url: "/menu/addMenu",
         method: "post",
@@ -20,7 +20,7 @@ export function addMenu(data){
 }
 
 //根据id删除   需要把id放在数组里
-export function logicalDelete(data){
+export function logicalDelete(data) {
     return service({
         url: "/menu/logicalDelete",
         method: "post",
@@ -29,18 +29,27 @@ export function logicalDelete(data){
 }
 
 //根据id更改
-export function updateMenu(data){
+export function updateMenu(data) {
     return service({
         url: "/menu/updateById",
         method: "post",
         data
     });
 }
+
 //根据id查询
-export function getMenuById(menuId){
+export function getMenuById(menuId) {
     return service({
         url: "/menu/selectById",
         method: "post",
         data: {menuId},
+    });
+}
+
+// 获取菜单
+export function getMenu() {
+    return service({
+        url: "menu/getMenu",
+        method: "post"
     });
 }

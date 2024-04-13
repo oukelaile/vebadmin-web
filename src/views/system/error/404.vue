@@ -1,6 +1,6 @@
 <template>
   <div>
-    404
+    vbe-admin提醒您：404
   </div>
 </template>
 

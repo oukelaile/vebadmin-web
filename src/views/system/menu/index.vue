@@ -1,10 +1,112 @@
-<template>
-  <div>
-    <div class="mb-4">
-      <el-button type="primary" style="margin-left: 16px" @click="addDrawer">添加</el-button>
-      <el-button type="danger" plain @click="topDeleteMenu" :disabled="selectedMenuIds.length === 0 ">删除</el-button>
+<template >
+
+    <!--搜索选项   -->
+    <div  ref="searchBox"
+          class="search-box"
+          :class="{ 'hide-section-search': unfoldOrFoldSearch }"
+          v-show="showSearch"
+    >
+      <el-row :gutter="0">
+        <el-col :span="23">
+          <el-form
+              :inline=true
+              :model="searchFromParams"
+          >
+            <el-form-item label="菜单名称" style="padding-top: 5px;">
+              <el-input placeholder="请输入菜单名称" v-model="searchFromParams.menuName" />
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+        <el-col :span="1">
+          <el-form-item style="margin-left: auto; padding-top: 5px;" v-show="hideUnfoldOrFoldSearch" >
+            <el-tooltip  content="展开/收起更多搜索选项"   :show-after="1200" :auto-close="1500" >
+              <el-button type="primary" @click="toggleShowSearch"  >
+                <el-icon>
+                  <CaretTop v-if="!unfoldOrFoldSearch" />
+                  <CaretBottom v-else />
+                </el-icon>
+              </el-button>
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+
+      </el-row>
     </div>
-    <!--  抽屉-->
+
+    <!--分割线    -->
+    <el-divider  style="margin-top: 0; margin-bottom: 0;"   v-show="showSearch" />
+
+    <!-- 操作按钮 -->
+    <div style="padding-top: 10px">
+      <el-button type="primary" plain @click="addDrawer">添加</el-button>
+      <el-button type="danger" plain @click="topDeleteMenu" :disabled="selectedMenuIds.length === 0 ">删除</el-button>
+
+      <!--最右边     -->
+      <el-button :icon="Refresh" circle style="float: right;" @click="refreshTable" />
+      <el-button :icon="Search" circle style="float: right;" @click="updateShowSearch" />
+      <el-button type="primary" style="float: right;" @click="searchFormHandler">搜索</el-button>
+    </div>
+
+    <!--table列表-->
+    <div style="padding-top: 10px">
+      <el-table
+          :data="tableData"
+          style="width: 100%;"
+          border
+          row-key="menuId"
+          @selection-change="onSelectionChange"
+      >
+        <el-table-column prop="menuId" type="selection" label="菜单id" width="50"/>
+        <el-table-column prop="menuName" label="菜单名称" width="200"/>
+        <el-table-column prop="menuIcon" label="图标" width="100">
+          <template #default="scope:any">
+            <el-icon :size="20" :color="scope.row.menuIcon">
+              <component :is="scope.row.menuIcon" />
+            </el-icon>
+          </template>
+        </el-table-column>
+        <el-table-column prop="menuType" label="菜单类型" width="100">
+          <template #default="scope:any">
+            <el-tag :type="scope.row.menuType === 'M' ? 'success' : 'danger'">
+              {{ scope.row.menuType === 'M' ? '目录' : '菜单' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="routerPath" label="路径path" width="200"/>
+        <el-table-column prop="routerComponent" label="组件path" width="200"/>
+        <el-table-column prop="hide" label="显示/隐藏" width="100">
+          <template #default="scope:any">
+            <el-tag :type="scope.row.hide === 0 ? 'primary' : 'warning' ">
+              {{ scope.row.hide === 0 ? '显示' : '隐藏' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="menuOrder" label="顺序" width="100"/>
+
+        <el-table-column>
+          <template #default="scope:any">
+            <el-button type="primary" @click="editDrawer(scope.row.menuId)" plain>编辑</el-button>
+            <el-button type="primary" plain @click="tableDeleteMenu(scope.row.menuId)"> 删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!--table页脚-->
+<!--    <div style="padding-top: 10px">-->
+<!--      <el-pagination-->
+<!--          background-->
+<!--          @size-change="handleSizeChange"-->
+<!--          @current-change="handleCurrentChange"-->
+<!--          :page-size="searchFromParams.pageSize"-->
+<!--          :total="total"-->
+<!--          layout="total, sizes, prev, pager, next, jumper"-->
+<!--      />-->
+<!--    </div>-->
+
+    <!-- 添加和修改抽屉-->
     <SharedDrawer
         ref="sharedDrawerRef"
         :isShowDrawer="isShow"
@@ -12,48 +114,18 @@
         :currentDrawerData="currentDrawerData"
         @handleClose="closeDrawer"
         @submit="submitHandle"
-    ></SharedDrawer>
-
-    <!--列表-->
-    <el-table
-        :data="tableData"
-        style="width: 100%"
-        border
-        row-key="menuId"
-        @selection-change="onSelectionChange"
-    >
-
-      <el-table-column prop="menuId" type="selection" label="菜单id" width="50"/>
-      <el-table-column prop="menuName" label="菜单名" width="200"/>
-      <!--    <el-table-column prop="create_by" label="更新者" width="150" />-->
-      <!--    <el-table-column prop="create_time" label="创建时间" width="120" />-->
-      <!--    <el-table-column prop="update_time" label="更新时间" width="120" />-->
-
-      <el-table-column>
-        <template #default="scope:any">
-          <el-button type="primary" @click="editDrawer(scope.row.menuId)" plain>编辑</el-button>
-          <el-button type="primary" plain @click="tableDeleteMenu(scope.row.menuId)"> 删除</el-button>
-        </template>
-      </el-table-column>
-
-    </el-table>
-    <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :page-size="searchParams.pageSize"
-        :total="total"
-        layout="total, sizes, prev, pager, next, jumper"
     />
-  </div>
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
-import {addMenu, getMenuById, getMenuList, logicalDelete, updateMenu} from "@/request/system/menu/api";
-import {useRoute, useRouter} from 'vue-router';
-import SharedDrawer from '@/components/system/MenuDrawer.vue';
+import {onMounted, ref, vShow} from "vue";
+
+import SharedDrawer from '@/views/system/menu/components/MenuDrawer.vue';
 import {ElMessageBox} from "element-plus";
+import {mainStore} from '@/storm/modules/main';
+import {Refresh, Search} from '@element-plus/icons-vue';
+import  * as menuApis from "@/api/system/menu";
+
 
 
 //----
@@ -81,6 +153,8 @@ const currentDrawerData = ref({
   parentMenuId: '',
   menuName: '',
   routerPath: '',
+  routerComponent: '',
+  menuType: '',
   menuOrder: '',
   menuList: [],
   menuEchoItems: [],
@@ -106,7 +180,7 @@ const editDrawer = (menuId) => {
   isShow.value = true
   mode.value = 'edit'
   //调用查询方法
-  getMenuById(menuId).then(res => {
+  menuApis.getMenuById(menuId).then(res => {
     currentDrawerData.value = res.data.data
     //编辑时 选择父级菜单手动处理添加顶级菜单选项   tableDat为当前列表的菜单 避免再次请求后台获取列表接口 手动给他添加上顶级菜单选项
     currentDrawerData.value.menuList = handleDrMenu(tableData);
@@ -200,7 +274,7 @@ const submitHandle = (data) => {
  */
 const subAddMenu = (data) => {
   //发送请求添加数据
-  addMenu(data).then(res => {
+  menuApis.addMenu(data).then(res => {
     if (res.data.code !== 200) {
       //添加失败打印错误信息
       console.log("添加失败");
@@ -218,7 +292,7 @@ const subAddMenu = (data) => {
  * @param data 抽屉里填写编辑的数据
  */
 const subUpdateMenu = (data) => {
-  updateMenu(data).then(res => {
+  menuApis.updateMenu(data).then(res => {
     if (res.data.code !== 200) {
       //添加失败打印错误信息
       console.log("修改失败");
@@ -232,30 +306,57 @@ const subUpdateMenu = (data) => {
 
 
 function addMenuHandle(data) {
-  addMenu(data).then(res => {
+  menuApis.addMenu(data).then(res => {
     console.log("addMenu", res);
     if (res.data.code === 200) {
-      getMenu();
+      getMenuTableData();
     }
   })
 }
 
 
+//页面table 数据
 const tableData = ref();
 
+//用来获取搜索的div的高度
+const searchBox = ref(null);
+const hideUnfoldOrFoldSearch = ref(false);
+
+//默认隐藏更多搜索
+const unfoldOrFoldSearch = ref(false);
+//切换搜索框隐藏状态
+const toggleShowSearch = () => {
+  unfoldOrFoldSearch.value = !unfoldOrFoldSearch.value;
+};
+
+const hideSearchOtherAndLineHandlers = () => {
+  const boxHeight = searchBox.value ? searchBox.value.offsetHeight : 0;
+  hideUnfoldOrFoldSearch.value = boxHeight > 65;
+  if (hideUnfoldOrFoldSearch.value) {
+    unfoldOrFoldSearch.value = true;
+  }
+  console.log("boxHeight",boxHeight);
+  console.log("hideUnfoldOrFoldSearch",hideUnfoldOrFoldSearch.value ,boxHeight > 60)
+};
+
 onMounted(() => {
-  getMenu()
+  getMenuTableData()
+  hideSearchOtherAndLineHandlers();
 });
 
-const getMenu = () => {
-  console.log("searchParams", searchParams);
-  getMenuList(searchParams).then(res => {
+
+
+
+
+const getMenuTableData = () => {
+  console.log("searchParams", searchFromParams.value);
+  menuApis.getMenuList(searchFromParams.value).then(res => {
     console.log("res:", res.data);
     if (res.data != null) {
-      console.log("MenuList:", res.data.data);
-      tableData.value = res.data.data.list;
+      console.log(" tableData  MenuList:", res.data.data);
+      tableData.value = res.data.data;
       total.value = parseInt(res.data.data.total);
-      searchParams.currentPage = parseInt(res.data.data.current);
+      searchFromParams.value.currentPage = parseInt(res.data.data.current);
     }
   });
 }
@@ -274,7 +375,7 @@ const tableDeleteMenu = (menuId) => {
       }
   ).then(() => {
 
-    logicalDelete([].concat(menuId)).then(res => {
+    menuApis.logicalDelete([].concat(menuId)).then(res => {
       console.log("tableDeleteMenu", res)
       if (res.data.code == 200) {
         console.log("删除成功刷新最新 列表和菜单")
@@ -287,7 +388,6 @@ const tableDeleteMenu = (menuId) => {
 }
 
 
-import {mainStore} from '@/storm/modules/main';
 const store = mainStore()
 
 
@@ -301,7 +401,7 @@ const getLatestInterface = () => {
   //使用pinia的方法直接重新获取
   //-----------
   //获取列表
-  getMenu();
+  getMenuTableData();
   //重新获取数据渲染左侧动态菜单
   store.requestMenuList();
 };
@@ -315,12 +415,12 @@ const onSelectionChange = (selected) => {
 };
 
 const topDeleteMenu = () => {
-  logicalDelete(selectedMenuIds.value).then(res => {
+  menuApis.logicalDelete(selectedMenuIds.value).then(res => {
     console.log("topDeleteMenu", res)
     console.log("topDeleteMenu", res.data.code)
     if (res.data.code == 200) {
       console.log("topDeleteMenu刷新");
-      getMenu()
+      getMenuTableData()
     }
   })
 };
@@ -329,21 +429,51 @@ const topDeleteMenu = () => {
 //----分页
 const total = ref(0);
 // 查询参数
-const searchParams = {
+const searchFromParams = ref({
+  menuName: '',
   currentPage: 1, // 第几页
   pageSize: 10, // 每页显示多少条
-};
+});
 
 function handleSizeChange(newPageSize) {
   console.log("handleSizeChange", newPageSize);
-  searchParams.pageSize = newPageSize;
-  searchParams.currentPage = 1; // 重置当前页码为第一页
-  getMenu();
+  searchFromParams.value.pageSize = newPageSize;
+  searchFromParams.value.currentPage = 1; // 重置当前页码为第一页
+  getMenuTableData();
 }
 
 function handleCurrentChange(newCurrentPage) {
-  searchParams.currentPage = newCurrentPage;
-  getMenu();
+  searchFromParams.value.currentPage = newCurrentPage;
+  getMenuTableData();
+}
+
+
+const searchFormHandler = () => {
+  getMenuTableData();
+}
+//----只显示table
+const showSearch = ref(true);
+
+const updateShowSearch = () => {
+  showSearch.value = !showSearch.value;
+};
+
+
+//刷新按钮
+const refreshTable = () => {
+  getMenuTableData();
 }
 
 </script>
+
+<style lang="scss" scoped>
+
+.search-box {
+  padding-top: 10px
+}
+.hide-section-search {
+  height: 50px; /* 设置您想要的高度 */
+  overflow: hidden; /* 隐藏超出部分 */
+}
+
+</style>

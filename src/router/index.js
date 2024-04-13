@@ -14,21 +14,24 @@ export const router = createRouter({
 // 前置路由 token为空 和不是/login页面就会跳转到/login页面
 router.beforeEach(async (to, from, next) => {
     console.log("执行了前置路由")
-    const store = mainStore()
-    // // 请求菜单
-    // store.requestMenuList()
-    console.log("store.getMenuList",store.getMenuList);
-
 
     const token = localStorage.getItem("token");
-    if (!token && to.path !== '/login') {
-        return next('/login');
+    //没有token并且不是登录页面就跳转到登录页面
+    if (!token && to.path.toLocaleLowerCase() !== '/login') {
+        next({path: "/login", replace: true});
     }
 
-    console.log("store.getMenuList",store.getMenuList.length)
-    if (store.getMenuList.length === 0) {
-        await loadDynamicRouter();
-        return next({...to, replace: true});
+    //有token才执行这里
+    if (token) {
+        const store = mainStore();
+        // // 请求菜单
+        // store.requestMenuList()
+        console.log("store.getMenuList",store.getMenuList);
+        console.log("store.getMenuList",store.getMenuList.length);
+        if (store.getMenuList.length === 0) {
+            await loadDynamicRouter();
+            return next({...to, replace: true});
+        }
     }
 
     next();

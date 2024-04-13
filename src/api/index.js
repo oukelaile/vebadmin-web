@@ -1,5 +1,5 @@
 import axios from 'axios';
-import router from '@/router';
+import router from '@/router/index.js';
 import {ElMessage} from 'element-plus'
 
 
@@ -57,12 +57,23 @@ service.interceptors.request.use((config) => {
 service.interceptors.response.use(
     // 成功响应的处理函数
     (response) => {
+        //login页面不进行拦截
+        // 如果是针对 /login 的响应，直接返回，不做其他处理
+        if (response.config.url === '/login') {
+            return response;
+        }
+        //请求路径包含/files/的请求，直接返回，不做其他处理
+        if (response.config.url.includes('/files/')) {
+            return response;
+        }
+        console.log(response.config.url,"的code",response.data.code)
         // 根据 response.data.code 进行不同的操作
         if (response.data.code === 200) {
             // 通常代表请求成功，可以进一步处理数据
             return response || {};
         } else if (response.data.code === 401) {
             // 例如，如果code为401，可能是未授权，可以做相应的处理，如跳转到登录页
+            console.log("axios触发了重定向到login")
             localStorage.removeItem('token');
             router.push("/login");
         } else {

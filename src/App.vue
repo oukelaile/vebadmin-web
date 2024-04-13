@@ -27,4 +27,17 @@ html,body,#app,home {
 //  height: 100%;
 
 //}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* 隐藏浏览器默认滚动条 */
+  -ms-overflow-style: none; /* IE 和 Edge */
+  scrollbar-width: none; /* Firefox */
+}
+/* For Webkit-based browsers like Chrome, Safari, and Opera */
+*::-webkit-scrollbar {
+  display: none; /* 隐藏滚动条 */
+}
+
 </style>

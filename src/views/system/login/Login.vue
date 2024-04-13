@@ -34,11 +34,13 @@
 
 <script setup>
 import {reactive, ref} from 'vue'
-import {login} from "@/request/api.js";
 import {ElMessage} from 'element-plus'
 
 
 import {useRouter} from "vue-router";
+import {loadDynamicRouter} from "@/router/modules/dynamicRouter.js";
+import {login} from "@/api/system/login/index.js";
+
 const router = useRouter()
 const ruleFormRef = ref()
 
@@ -76,8 +78,6 @@ const rules = reactive({
   username: [{validator: validateUsername, trigger: 'blur'}],
   password: [{validator: validatePassword, trigger: 'blur'}],
 })
-
-import {loadDynamicRouter} from "@/router/modules/dynamicRouter.js";
 
 const submitForm = (formEl) => {
   if (!formEl)
@@ -139,7 +139,7 @@ const upErr = () => {
   align-items: center;
   width: 100%;
   height: 100%;
-  background-image: url("../assets/login1.png");
+  background-image: url("../../../assets/login1.png");
   background-size: cover;
   background-color: #5698c3;
 }

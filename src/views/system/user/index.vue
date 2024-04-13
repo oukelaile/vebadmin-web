@@ -1,14 +1,11 @@
 <template>
-  <div>
-    Main
-  </div>
+    user管理
 </template>
 
 <script setup>
 
-
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 </style>
