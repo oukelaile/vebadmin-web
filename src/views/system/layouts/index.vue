@@ -13,7 +13,7 @@
           >
             <el-menu-item index="/home" style="height: 50px;">
               <img src="/src/assets/vebLogo.png" alt="vbeAdmin" style="width: 30px; height: 30px;"/>
-              <span>veb-Admin</span>
+              <span>vebAdmin</span>
             </el-menu-item>
             <!--分割线-->
             <el-divider style="margin: 0px 0;"/>
