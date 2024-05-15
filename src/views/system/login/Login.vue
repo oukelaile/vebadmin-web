@@ -11,7 +11,7 @@
           label-width="auto"
           class="demo-ruleForm"
       >
-        <h2 class="login-box-title">vebasic</h2>
+        <h2 class="login-box-title">vebAdmin</h2>
 
         <el-form-item label="账号" prop="username">
           <el-input v-model="accountInfo.username" type="username"/>

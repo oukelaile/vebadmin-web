@@ -1,5 +1,4 @@
 <template >
-
     <!--搜索选项   -->
     <div  ref="searchBox"
           class="search-box"
@@ -11,9 +10,23 @@
           <el-form
               :inline=true
               :model="searchFromParams"
+              class="search-style"
           >
-            <el-form-item label="菜单名称" style="padding-top: 5px;">
-              <el-input placeholder="请输入菜单名称" v-model="searchFromParams.menuName" />
+            <el-form-item label="菜单名称">
+              <el-input   placeholder="请输入菜单名称" v-model="searchFromParams.menuName" />
+            </el-form-item>
+            <el-form-item label="菜单类型">
+              <el-select  v-model="searchFromParams.menuType" placeholder="请选择" clearable>
+                <el-option label="目录" value="M" />
+                <el-option label="菜单" value="C" />
+                <el-option label="按钮" value="F" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="显示/隐藏">
+              <el-select  v-model="searchFromParams.hide" placeholder="请选择" clearable>
+                <el-option label="显示" value=0 />
+                <el-option label="隐藏" value=1 />
+              </el-select>
             </el-form-item>
           </el-form>
         </el-col>
@@ -30,7 +43,6 @@
             </el-tooltip>
           </el-form-item>
         </el-col>
-
       </el-row>
     </div>
 
@@ -45,7 +57,9 @@
       <!--最右边     -->
       <el-button :icon="Refresh" circle style="float: right;" @click="refreshTable" />
       <el-button :icon="Search" circle style="float: right;" @click="updateShowSearch" />
-      <el-button type="primary" style="float: right;" @click="searchFormHandler">搜索</el-button>
+      <el-button type="primary" style="float: right;" @click="searchReset" plain>重置</el-button>
+      <el-button type="primary" style="float: right;" @click="searchFormHandler" v-show="showSearch">搜索</el-button>
+
     </div>
 
     <!--table列表-->
@@ -118,7 +132,7 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref, vShow} from "vue";
+import {onMounted, ref, toRefs, vShow} from "vue";
 
 import SharedDrawer from '@/views/system/menu/components/MenuDrawer.vue';
 import {ElMessageBox} from "element-plus";
@@ -430,10 +444,14 @@ const topDeleteMenu = () => {
 const total = ref(0);
 // 查询参数
 const searchFromParams = ref({
-  menuName: '',
-  currentPage: 1, // 第几页
-  pageSize: 10, // 每页显示多少条
+  menuName: '', //菜单名称
+  menuType: '', //菜单类型
+  hide: null, //隐藏 显示 0显示1隐藏
+
+  // currentPage: 1, // 第几页
+  // pageSize: 10, // 每页显示多少条
 });
+
 
 function handleSizeChange(newPageSize) {
   console.log("handleSizeChange", newPageSize);
@@ -451,6 +469,15 @@ function handleCurrentChange(newCurrentPage) {
 const searchFormHandler = () => {
   getMenuTableData();
 }
+const searchReset = () => {
+  searchFromParams.value = {
+    menuName: '', //菜单名称
+    menuType: '', //菜单类型
+    hide: null, //隐藏 显示 0显示1隐藏
+  }
+  getMenuTableData();
+};
+
 //----只显示table
 const showSearch = ref(true);
 
@@ -467,13 +494,26 @@ const refreshTable = () => {
 </script>
 
 <style lang="scss" scoped>
-
+// 搜索框样式
 .search-box {
   padding-top: 10px
 }
+//隐藏搜索框样式  页面搜索选项超出预定值 只显示50px内容  然后通过更多按钮显示更多内容
 .hide-section-search {
   height: 50px; /* 设置您想要的高度 */
   overflow: hidden; /* 隐藏超出部分 */
+}
+// 在el-form里设置search-style样式影响他的子元素
+.search-style {
+  .el-form-item {
+    padding-top: 5px;
+    .el-input {
+      width: 200px;
+    }
+    .el-select {
+      width: 200px;
+    }
+  }
 }
 
 </style>

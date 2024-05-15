@@ -27,5 +27,5 @@ function binaryDataToImageUrl(data) {
 }
 
 export function getFileAddress() {
-    return "http://localhost:8080";
+    return import.meta.env.VITE_SERVER;
 }

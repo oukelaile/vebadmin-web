@@ -1,59 +1,52 @@
 <template>
-
-  <el-row style=" padding-top: 10px ">
-    <el-col :span="12">
-      <el-card style="max-width: 650px; height: 390px">
-
+  <el-row style=" padding-top: 10px " :xs="23">
+    <el-col :span="12" style="padding-right: 15px;overflow-y: auto;" :xs="24">
+      <el-card style=" overflow-y: auto;">
           <el-tag class="tag-item" effect="dark">
             开发：
-          <el-check-tag class="check-tag-item" checked>THQ</el-check-tag>
           </el-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>THQ</el-check-tag>
         <el-divider  class="divider"/>
+
 
         <el-tag class="tag-item" effect="dark">
             邮箱联系方式：
-          <el-check-tag class="check-tag-item" checked>444057897@qq.com</el-check-tag>
-          <el-check-tag class="check-tag-item" checked>tthhqq@88.com</el-check-tag>
-          </el-tag>
+        </el-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>444057897@qq.com</el-check-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>tthhqq@88.com</el-check-tag>
         <el-divider class="divider" />
 
         <el-tag class="tag-item" effect="dark">
           GIT仓库：
-          <el-check-tag class="check-tag-item" checked>https://github.com/oukelaile</el-check-tag>
-          <el-check-tag class="check-tag-item" checked>https://gitee.com/oukelaile</el-check-tag>
         </el-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>https://github.com/oukelaile</el-check-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>https://gitee.com/oukelaile</el-check-tag>
         <el-divider class="divider" />
 
         <el-tag class="tag-item" effect="dark">
           QQ：
-          <el-check-tag class="check-tag-item" checked>444035897</el-check-tag>
         </el-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>444035897</el-check-tag>
         <el-divider class="divider" />
 
-        <el-tag class="tag-item" effect="dark" style="height: 80px">
+        <el-tag class="tag-item" effect="dark" >
           后端git地址：
-          <div>
-            <el-check-tag class="check-tag-item" style="margin-top: 5px;" checked>https://github.com/oukelaile/vebadmin-server</el-check-tag>
-            <br/>
-            <el-check-tag class="check-tag-item" style="margin-top: 5px;"  checked>https://gitee.com/oukelaile/vebadmin-server</el-check-tag>
-          </div>
         </el-tag>
-        <el-divider class="divider" />
-        <el-tag class="tag-item" effect="dark" style="height: 80px">
-          前端git地址：
-          <div>
-            <el-check-tag class="check-tag-item" style="margin-top: 5px;" checked>https://github.com/oukelaile/vebAdmin-web</el-check-tag>
-            <br/>
-            <el-check-tag class="check-tag-item" style="margin-top: 5px;"  checked>https://gitee.com/oukelaile/vebAdmin-web</el-check-tag>
-          </div>
-        </el-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>https://github.com/oukelaile/vebadmin-server</el-check-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;"  checked>https://gitee.com/oukelaile/vebadmin-server</el-check-tag>
 
         <el-divider class="divider" />
+
+        <el-tag class="tag-item" effect="dark">
+          前端git地址：
+        </el-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>https://github.com/oukelaile/vebAdmin-web</el-check-tag>
+        <el-check-tag class="check-tag-item" style="margin: 5px;" checked>https://gitee.com/oukelaile/vebAdmin-web</el-check-tag>
 
       </el-card>
     </el-col>
-    <el-col :span="12">
-      <el-card style="max-width: 650px; height: 390px">
+    <el-col :span="12" :xs="23">
+      <el-card style="">
         <div style=" text-align: center;">
           <span style="font-weight: bold;  font-size: 39px;">vebAdmin 技术栈</span>
         </div>
@@ -71,8 +64,6 @@
     </el-col>
   </el-row>
 
-
-
 </template>
 
 <script>export default {
@@ -83,16 +74,31 @@
     };
   }
 };
+//---
+
+import { reactive } from 'vue'
+
 </script>
 
 <style scoped>
 .tag-item {
-  height: 36px;
+  display: flex; /* 设置弹性布局 */
+  flex-wrap: wrap; /* 允许元素换行 */
+  align-items: center; /* 水平居中 */
+}
+
+.check-tags {
+  display: flex; /* 设置弹性布局 */
+  flex-wrap: wrap; /* 允许元素换行 */
 }
 
 .check-tag-item {
-  height: 10px;
-  margin-right: 10px;
+  flex: 1; /* 让每个el-check-tag占据相等的空间 */
+  margin-right: 5px; /* 添加右侧间距 */
+  white-space: normal; /* 允许文本换行 */
+  word-break: break-all; /* 在必要时强制单词断行 */
+  max-width: 100%; /* 确保标签不超过其父元素宽度 */
+  display: inline-block; /* 使标签作为行内元素显示 */
 }
 
 .divider {

@@ -7,7 +7,7 @@ import {ElMessage} from 'element-plus'
 const service = axios.create({
     // api
     // baseURL: "https://www.fastmock.site/mock/bf1fcb3c2e2945669c2c8d0ecb8009b8/api",
-    baseURL: "http://127.0.0.1:8080",
+    baseURL: import.meta.env.VITE_SERVER,
     // 超时时间
     // timeout: 5000,
     // 设置utf-8 json格式

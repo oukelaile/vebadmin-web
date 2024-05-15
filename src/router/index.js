@@ -14,7 +14,6 @@ export const router = createRouter({
 // 前置路由 token为空 和不是/login页面就会跳转到/login页面
 router.beforeEach(async (to, from, next) => {
     console.log("执行了前置路由")
-
     const token = localStorage.getItem("token");
     //没有token并且不是登录页面就跳转到登录页面
     if (!token && to.path.toLocaleLowerCase() !== '/login') {
